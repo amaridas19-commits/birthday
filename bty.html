@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Birthday Celebration with Photos and Blasts</title>
+    <style>
+        :root {
+            --stroke: #ffcc00;
+            --pupil: #000000;
+            --icing: #ffffff;
+            --sprinkle1: #ff6666;
+            --sprinkle2: #66ccff;
+            --sprinkle3: #99ff99;
+        }
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f0f0f0;
+            position: relative;
+            font-family: Arial, sans-serif;
+            flex-direction: column;
+            transition: background 1s ease;
+            overflow: hidden;
+        }
+        body.celebrating {
+            animation: backgroundShift 5s infinite alternate;
+        }
+        @keyframes backgroundShift {
+            0% { background-color: #ffe0b2; }
+            25% { background-color: #ffcc80; }
+            50% { background-color: #ffe0b2; }
+            75% { background-color: #ffd180; }
+            100% { background-color: #ffe0b2; }
+        }
+        #name, #age {
+            color: #2f2fd3;
+            font-weight: bold;
+            font-size: 22px;
+            text-shadow: 1px 1px 4px #fff, 0 0 6px #000;
+        }
+        .background-photos {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        .background-photos img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        .background-photos img.show {
+            opacity: 1;
+        }
+        .birthday-button_cake {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translate(-50%, 0);
+            width: 320px;
+            transition: opacity 0.5s ease;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 2;
+        }
+        .birthday-button_cake.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .cake_layer {
+            fill: var(--stroke);
+        }
+        .cake_icing {
+            fill: var(--icing);
+        }
+        .cake_eye-body {
+            fill: var(--stroke);
+        }
+        .cake_eye-pupil {
+            fill: var(--pupil);
+        }
+        .flame {
+            fill: orange;
+            animation: flicker 0.3s infinite alternate;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .flame.show {
+            opacity: 1;
+        }
+        @keyframes flicker {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.2); }
+        }
+        .sprinkle {
+            animation: sparkle 1s infinite alternate;
+        }
+        @keyframes sparkle {
+            0% { transform: translate(0, 0); opacity: 1; }
+            100% { transform: translate(2px, -2px); opacity: 0.7; }
+        }
+        .show-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 3;
+            transition: all 0.3s ease;
+        }
+        .show-button:hover {
+            background: linear-gradient(45deg, #ff4081, #ffeb3b, #8bc34a);
+            color: #fff;
+            box-shadow: 0 0 10px #ff4081;
+            transform: scale(1.1);
+        }
+        .birthday-details {
+            margin-top: 20px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 2;
+            position: relative;
+        }
+        .birthday-details.show {
+            opacity: 1;
+        }
+        .birthday-details h1 {
+            margin: 10px 0;
+            font-size: 24px;
+            color: #ff4081;
+            animation: glow 1.5s infinite alternate;
+        }
+        @keyframes glow {
+            0% { text-shadow: 0 0 5px #ff4081, 0 0 10px #ff4081; }
+            100% { text-shadow: 0 0 20px #ffeb3b, 0 0 40px #ffeb3b; }
+        }
+        .birthday-details p {
+            margin: 5px 0;
+            font-size: 18px;
+            color: #333;
+        }
+        .fireworks {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .burst {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            transform: scale(0);
+            animation: burst 1s forwards;
+        }
+        @keyframes burst {
+            0% {
+                opacity: 1;
+                transform: scale(0);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0.8;
+            animation: fall 3s linear forwards;
+        }
+        @keyframes fall {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(500px); opacity: 0; }
+        }
+        .burst {
+        position: absolute;
+        border-radius: 50%;
+        opacity: 0;
+        transform: scale(0);
+        animation: burst 1s forwards;
+        }
+        @keyframes burst {
+        0% { opacity: 1; transform: scale(0); }
+        100% { opacity: 0; transform: scale(2); }
+        }
+        .confetti {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        opacity: 0.8;
+        animation: fall 3s linear forwards;
+        }
+        @keyframes fall {
+        0% { transform: translateY(0); opacity: 1; }
+        100% { transform: translateY(100vh); opacity: 0; }
+        }
+        /* Realistic Balloon */
+        .balloon {
+        position: absolute;
+        bottom: -150px;
+        width: 60px;
+        height: 80px;
+        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.7), transparent 70%),
+                    red;
+        border-radius: 50% 50% 50% 50%;
+        animation: floatUp 10s linear forwards;
+        box-shadow: inset -5px -10px rgba(0,0,0,0.2);
+        }
+
+        /* Knot at bottom */
+        .balloon::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 12px;
+        height: 12px;
+        background: inherit;
+        clip-path: polygon(50% 100%, 0 0, 100% 0);
+        }
+
+        /* String */
+        .balloon::before {
+        content: "";
+        position: absolute;
+        bottom: -60px;
+        left: 50%;
+        width: 2px;
+        height: 60px;
+        background: #444;
+        transform: translateX(-50%);
+        }
+
+        /* Floating animation */
+        @keyframes floatUp {
+        0%   { transform: translateY(0) scale(1); opacity: 1; }
+        100% { transform: translateY(-120vh) scale(1.1); opacity: 0; }
+        }
+
+            /* Stars */
+        .star {
+        position: absolute;
+        bottom: 0;
+        width: 12px;
+        height: 12px;
+        background: yellow;
+        clip-path: polygon(
+            50% 0%, 61% 35%, 98% 35%, 
+            68% 57%, 79% 91%, 
+            50% 70%, 21% 91%, 
+            32% 57%, 2% 35%, 
+            39% 35%
+        );
+        animation: twinkle 5s linear forwards;
+        opacity: 0.9;
+        }
+
+        /* Twinkling animation */
+        @keyframes twinkle {
+        0%   { transform: translateY(0) scale(0.5); opacity: 1; }
+        50%  { opacity: 0.5; transform: translateY(-50vh) scale(1.2); }
+        100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <div class="background-photos">
+        <img src="C:\Users\User\OneDrive\Documents\bt\WhatsApp Image 2025-09-18 at 10.57.28_bcb34c41.jpg"   id="photo1"/>
+        <img src="C:\Users\User\OneDrive\Documents\birthday\birth\WhatsApp Image 2025-09-11 at 01.41.59_f205172b.jpg" id="photo2"/>
+        <img src="C:\Users\User\OneDrive\Documents\birthday\birth\WhatsApp Image 2025-09-11 at 01.41.58_f7a651db.jpg" id="photo3"/>
+        <img src="C:\Users\User\OneDrive\Documents\birthday\birth\WhatsApp Image 2025-09-11 at 01.41.58_9cff7475.jpg" id="photo4"/>
+    </div>
+
+    <button class="show-button" onclick="startCountdown()">🎂 Celebrate Birthday</button>
+
+    <div class="birthday-button_cake" id="cake">
+        <svg viewBox="0 0 320 220" width="100%" height="auto">
+            <path d="M60 100 Q160 50 260 100 L260 110 Q160 70 60 110 Z" class="cake_icing"/>
+            <rect x="120" y="70" width="10" height="20" fill="red"/>
+            <rect x="190" y="70" width="10" height="20" fill="red"/>
+            <circle cx="125" cy="65" r="5" class="flame" id="flame1"/>
+            <circle cx="195" cy="65" r="5" class="flame" id="flame2"/>
+            <circle cx="80" cy="110" r="3" fill="var(--sprinkle1)" class="sprinkle"/>
+            <circle cx="150" cy="120" r="3" fill="var(--sprinkle2)" class="sprinkle"/>
+            <circle cx="220" cy="115" r="3" fill="var(--sprinkle3)" class="sprinkle"/>
+            <circle cx="110" cy="150" r="3" fill="var(--sprinkle1)" class="sprinkle"/>
+            <circle cx="200" cy="130" r="3" fill="var(--sprinkle2)" class="sprinkle"/>
+            <circle cx="180" cy="140" r="3" fill="var(--sprinkle3)" class="sprinkle"/>
+            <rect x="60" y="110" width="200" height="40" class="cake_layer"/>
+            <rect x="60" y="150" width="200" height="40" class="cake_layer"/>
+            <circle cx="110" cy="140" r="8" class="cake_eye-body"/>
+            <circle cx="210" cy="140" r="8" class="cake_eye-body"/>
+            <circle cx="110" cy="140" r="4" class="cake_eye-pupil"/>
+            <circle cx="210" cy="140" r="4" class="cake_eye-pupil"/>
+            <path d="M110 160 Q160 180 210 160" stroke="var(--pupil)" stroke-width="3" fill="none"/>
+        </svg>
+    </div>
+
+    <div class="birthday-details" id="details">
+        <h1>🎉 Happy Birthday! 🎉</h1>
+        <p id="name">Name: </p>
+        <p id="age">Age: </p>
+    </div>
+
+    <div class="fireworks" id="fireworks"></div>
+
+    <audio id="birthday-sound" src="C:\Users\User\OneDrive\Documents\bt\happy-birthday-song-special-birthday-celebration-song128k_9hKtoBkt.mp3"></audio>
+
+    <script>
+        let currentPhoto = 0;
+        const photos = [
+            document.getElementById('photo1'),
+            document.getElementById('photo2'),
+            document.getElementById('photo3'),
+            document.getElementById('photo4')
+        ];
+        let photoInterval;
+        let fireworksInterval;
+        let countdownInterval;
+
+        function typeBirthdayMessage() {
+            const typingText = document.getElementById('name');
+            let msg = "Wishing you joy and success on your special day!";
+            let i = 0;
+            typingText.textContent = "";
+            let typeInterval = setInterval(() => {
+                typingText.textContent += msg[i];
+                i++;
+                if (i >= msg.length) clearInterval(typeInterval);
+            }, 80);
+        }
+
+        function startCountdown() {
+            const button = document.querySelector('.show-button');
+            let countdown = 3;
+            button.disabled = true;
+            button.textContent = `Starting in ${countdown}...`;
+            countdownInterval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    button.textContent = `Starting in ${countdown}...`;
+                } else {
+                    clearInterval(countdownInterval);
+                    button.textContent = "🎂 Celebrate Birthday";
+                    button.disabled = false;
+                    toggleCelebration();
+                }
+            }, 1000);
+        }
+
+        function toggleCelebration() {
+            const body = document.body;
+            const cake = document.getElementById('cake');
+            const details = document.getElementById('details');
+            const flame1 = document.getElementById('flame1');
+            const flame2 = document.getElementById('flame2');
+            const fireworks = document.getElementById('fireworks');
+            const button = document.querySelector('.show-button');
+            const sound = document.getElementById('birthday-sound');
+
+            cake.classList.toggle('show');
+            details.classList.toggle('show');
+            flame1.classList.toggle('show');
+            flame2.classList.toggle('show');
+            body.classList.toggle('celebrating', cake.classList.contains('show'));
+
+            if (cake.classList.contains('show')) {
+                body.style.background = "#ffe0b2";
+                document.getElementById('name').textContent = "😊 solanki 😇🥳🎂";
+                document.getElementById('age').textContent = "now you are 20 🥹";
+                cyclePhotos();
+                startFireworks();
+                createConfetti();
+                sound.play();
+                button.style.display = "none";
+                typeBirthdayMessage();
+
+                 setInterval(createBalloon, 1500);
+                 setInterval(createStar, 2000);
+            } else {
+                body.style.background = "#f0f0f0";
+                document.getElementById('name').textContent = "";
+                document.getElementById('age').textContent = "";
+                stopPhotos();
+                stopFireworks();
+                button.style.display = "inline-block";
+                sound.pause();
+                sound.currentTime = 0;
+            }
+        }
+
+        function cyclePhotos() {
+            stopPhotos();
+            currentPhoto = 0;
+            photos[currentPhoto].classList.add('show');
+            photoInterval = setInterval(() => {
+                photos[currentPhoto].classList.remove('show');
+                currentPhoto = (currentPhoto + 1) % photos.length;
+                photos[currentPhoto].classList.add('show');
+            }, 3000);
+        }
+
+        function stopPhotos() {
+            clearInterval(photoInterval);
+            photos.forEach(photo => photo.classList.remove('show'));
+        }
+
+        function startFireworks() {
+            stopFireworks();
+            fireworksInterval = setInterval(() => {
+                createFireworks();
+            }, 500);
+        }
+
+        function stopFireworks() {
+            clearInterval(fireworksInterval);
+        }
+
+        function createFireworks() {
+            const fireworks = document.getElementById('fireworks');
+            for (let i = 0; i < 5; i++) {
+                let burst = document.createElement('div');
+                burst.classList.add('burst');
+                burst.style.width = burst.style.height = `${Math.random() * 30 + 10}px`;
+                burst.style.background = randomColor();
+                burst.style.left = `${Math.random() * 100}%`;
+                burst.style.top = `${Math.random() * 50}%`;
+                fireworks.appendChild(burst);
+                burst.addEventListener('animationend', () => burst.remove());
+            }
+        }
+
+        function createConfetti() {
+            const body = document.body;
+            for (let i = 0; i < 50; i++) {
+                let confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.backgroundColor = randomColor();
+                body.appendChild(confetti);
+                confetti.addEventListener('animationend', () => confetti.remove());
+            }
+        }
+
+        function createBalloon() {
+            let balloon = document.createElement("div");
+            balloon.classList.add("balloon");
+            balloon.style.left = `${Math.random() * 100}%`;
+            balloon.style.background = randomColor();
+            balloon.style.animationDuration = `${Math.random() * 5 + 5}s`;
+            document.body.appendChild(balloon);
+            setTimeout(() => balloon.remove(), 10000);
+        }
+
+        function createStar() {
+            let star = document.createElement("div");
+            star.classList.add("star");
+
+            // Random horizontal position
+            star.style.left = `${Math.random() * 100}%`;
+
+            document.body.appendChild(star);
+            setTimeout(() => star.remove(), 5000);
+        }
+
+        function randomColor() {
+            const colors = ['#ff4081','#ffeb3b','#8bc34a','#03a9f4','#e91e63','#ffc107','#00e676','#ff6d00'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+    </script>
+
+</body>
+</html>
